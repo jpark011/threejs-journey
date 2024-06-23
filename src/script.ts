@@ -9,6 +9,7 @@ import height from '../static/textures/door/height.jpg'
 import metalness from '../static/textures/door/metalness.jpg'
 import normal from '../static/textures/door/normal.jpg'
 import roughness from '../static/textures/door/roughness.jpg'
+import envMap from '../static/textures/environmentMap/2k.hdr?url'
 import gradient from '../static/textures/gradients/5.jpg'
 import matcaps from '../static/textures/matcaps/8.png'
 
@@ -142,7 +143,7 @@ pointLight.position.z = 4
 scene.add(pointLight)
 
 const rgbeLoader = new RGBELoader()
-rgbeLoader.load('/textures/environmentMap/2k.hdr', environmentMap => {
+rgbeLoader.load(envMap, environmentMap => {
   environmentMap.mapping = THREE.EquirectangularReflectionMapping
 
   scene.background = environmentMap

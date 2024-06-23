@@ -3,7 +3,8 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
-import typefaceFont from '/fonts/helvetiker_regular.typeface.json?url'
+// import typefaceFont from '/fonts/helvetiker_regular.typeface.json?url'
+import typefaceFont from '/fonts/Hi_Melody_Regular.typeface.json?url'
 
 /**
  * Base
@@ -34,7 +35,7 @@ fontLoader.load(typefaceFont, font => {
   const material = new THREE.MeshMatcapMaterial({ matcap: matcapTexture })
 
   // Text
-  const textGeometry = new TextGeometry('Hello Three.js', {
+  const textGeometry = new TextGeometry('카몽 아쥬~ 바부쥬 ㅋㅋㅋ', {
     font: font,
     size: 0.5,
     depth: 0.2,

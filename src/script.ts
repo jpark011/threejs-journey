@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
+import typefaceFont from '/fonts/helvetiker_regular.typeface.json?url'
 
 /**
  * Base
@@ -28,7 +29,7 @@ matcapTexture.colorSpace = THREE.SRGBColorSpace
  */
 const fontLoader = new FontLoader()
 
-fontLoader.load('/fonts/helvetiker_regular.typeface.json', font => {
+fontLoader.load(typefaceFont, font => {
   // Material
   const material = new THREE.MeshMatcapMaterial({ matcap: matcapTexture })
 

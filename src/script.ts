@@ -1,96 +1,153 @@
-import GUI from 'lil-gui'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js'
+
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js'
+import alpha from '../static/textures/door/alpha.jpg'
+import ambientOcclusion from '../static/textures/door/ambientOcclusion.jpg'
+import color from '../static/textures/door/color.jpg'
+import height from '../static/textures/door/height.jpg'
+import metalness from '../static/textures/door/metalness.jpg'
+import normal from '../static/textures/door/normal.jpg'
+import roughness from '../static/textures/door/roughness.jpg'
+import gradient from '../static/textures/gradients/5.jpg'
+import matcaps from '../static/textures/matcaps/8.png'
+
+import GUI from 'lil-gui'
+
+const gui = new GUI()
 
 /**
  * Base
  */
-// Debug
-const gui = new GUI()
-
 // Canvas
-const canvas = document.querySelector('canvas.webgl') as HTMLCanvasElement
+const canvas = document.querySelector('canvas.webgl') as HTMLElement
+
+const textureLoader = new THREE.TextureLoader()
+const alphaTexture = textureLoader.load(alpha)
+const ambientOcclusionTexture = textureLoader.load(ambientOcclusion)
+const colorTexture = textureLoader.load(color)
+const heightTexture = textureLoader.load(height)
+const metalnessTexture = textureLoader.load(metalness)
+const normalTexture = textureLoader.load(normal)
+const roughnessTexture = textureLoader.load(roughness)
+const matcapsTexture = textureLoader.load(matcaps)
+const gradientTexture = textureLoader.load(gradient)
+
+colorTexture.colorSpace = THREE.SRGBColorSpace
+matcapsTexture.colorSpace = THREE.SRGBColorSpace
 
 // Scene
 const scene = new THREE.Scene()
 
-/**
- * Lights
- */
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.1)
-scene.add(ambientLight)
+// const material = new THREE.MeshBasicMaterial()
+// material.transparent = true
+// material.opacity = 0.5
+// material.side = THREE.DoubleSide
 
-const directionalLight = new THREE.DirectionalLight(0xffffff, 0.9)
-directionalLight.position.set(1, 0.25, 0)
-// scene.add(directionalLight)
+// const material = new THREE.MeshPhongMaterial()
+// material.shininess = 100
+// material.specular = new THREE.Color(0x1188ff)
 
-const directionalLightCameraHelper = new THREE.DirectionalLightHelper(
-  directionalLight,
-  0.2
-)
-scene.add(directionalLightCameraHelper)
+// const material = new THREE.MeshToonMaterial()
+// gradientTexture.minFilter = THREE.NearestFilter
+// gradientTexture.magFilter = THREE.NearestFilter
+// gradientTexture.generateMipmaps = false
+// material.gradientMap = gradientTexture
 
-const hemisphereLight = new THREE.HemisphereLight(0xff0000, 0x0000ff, 0.9)
-scene.add(hemisphereLight)
+// const material = new THREE.MeshStandardMaterial()
+// material.roughness = 1
+// material.metalness = 1
+// material.map = colorTexture
+// material.aoMap = ambientOcclusionTexture
+// material.aoMapIntensity = 1
+// material.displacementMap = heightTexture
+// material.displacementScale = 0.05
+// material.metalnessMap = metalnessTexture
+// material.normalMap = normalTexture
+// material.roughnessMap = roughnessTexture
+// material.transparent = true
+// material.alphaMap = alphaTexture
 
-const HemisphereLightHelper = new THREE.HemisphereLightHelper(
-  hemisphereLight,
-  0.2
-)
-scene.add(HemisphereLightHelper)
+// gui.add(material, 'metalness').min(0).max(1).step(0.01)
+// gui.add(material, 'roughness').min(0).max(1).step(0.01)
 
-const pointLight = new THREE.PointLight(0xffffff, 0.9, 10)
-pointLight.position.set(1, -0.5, 1)
-scene.add(pointLight)
+const material = new THREE.MeshPhysicalMaterial()
+material.roughness = 0
+material.metalness = 0
+// material.map = colorTexture
+// material.aoMap = ambientOcclusionTexture
+// material.aoMapIntensity = 1
+// material.displacementMap = heightTexture
+// material.displacementScale = 0.05
+// material.metalnessMap = metalnessTexture
+// material.normalMap = normalTexture
+// material.roughnessMap = roughnessTexture
+// material.transparent = true
+// material.alphaMap = alphaTexture
 
-const pointLightHelper = new THREE.PointLightHelper(pointLight, 0.2)
-scene.add(pointLightHelper)
+gui.add(material, 'metalness').min(0).max(1).step(0.01)
+gui.add(material, 'roughness').min(0).max(1).step(0.01)
 
-const rectAreaLight = new THREE.RectAreaLight(0x4e00ff, 6, 1, 1)
-rectAreaLight.position.set(-1.5, 0, 1.5)
-scene.add(rectAreaLight)
-const rectAreaLightHelper = new RectAreaLightHelper(rectAreaLight)
-scene.add(rectAreaLightHelper)
+// material.clearcoat = 1
+// material.clearcoatRoughness = 1
 
-const spotLight = new THREE.SpotLight(0x78ff00, 4.5, 6, Math.PI * 0.2, 0.25, 1)
-spotLight.position.set(0, 2, 3)
-scene.add(spotLight)
-const spotLightHelper = new THREE.SpotLightHelper(spotLight)
-scene.add(spotLightHelper)
+// gui.add(material, 'clearcoat').min(0).max(1).step(0.01)
+// gui.add(material, 'clearcoatRoughness').min(0).max(1).step(0.01)
 
-spotLight.target.position.x = -0.75
-scene.add(spotLight.target)
+// material.sheen = 1
+// material.sheenRoughness = 0.25
+// material.sheenColor.set(1, 1, 1)
 
-gui.add(ambientLight, 'intensity').min(0).max(1).step(0.01)
-// gui.add(pointLight.position, 'x').min(-5).max(5).step(0.01)
-// gui.add(pointLight.position, 'y').min(-5).max(5).step(0.01)
-// gui.add(pointLight.position, 'z').min(-5).max(5).step(0.01)
+// gui.add(material, 'sheen').min(0).max(1).step(0.01)
+// gui.add(material, 'sheenRoughness').min(0).max(1).step(0.01)
+// gui.addColor(material, 'sheenColor')
 
-/**
- * Objects
- */
-// Material
-const material = new THREE.MeshStandardMaterial()
-material.roughness = 0.4
+// material.iridescence = 1
+// material.iridescenceIOR = 1
+// material.iridescenceThicknessRange = [100, 180]
 
-// Objects
-const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 32, 32), material)
-sphere.position.x = -1.5
+// gui.add(material, 'iridescence').min(0).max(1).step(0.01)
+// gui.add(material, 'iridescenceIOR').min(0).max(1).step(0.01)
+// gui.add(material.iridescenceThicknessRange, '0').min(0).max(200).step(1)
+// gui.add(material.iridescenceThicknessRange, '1').min(0).max(200).step(1)
 
-const cube = new THREE.Mesh(new THREE.BoxGeometry(0.75, 0.75, 0.75), material)
+material.transmission = 1
+material.ior = 1.5
+material.thickness = 0.5
+
+gui.add(material, 'transmission').min(0).max(1).step(0.01)
+gui.add(material, 'ior').min(0).max(2).step(0.01)
+gui.add(material, 'thickness').min(0).max(1).step(0.01)
+
+const sphere = new THREE.Mesh(new THREE.SphereGeometry(0.5, 64, 64), material)
+sphere.position.x = -1
+
+const plane = new THREE.Mesh(new THREE.PlaneGeometry(1, 1, 100, 100), material)
+plane.position.x = 0
 
 const torus = new THREE.Mesh(
-  new THREE.TorusGeometry(0.3, 0.2, 32, 64),
+  new THREE.TorusGeometry(0.3, 0.2, 64, 64),
   material
 )
-torus.position.x = 1.5
+torus.position.x = 1
+scene.add(sphere, plane, torus)
 
-const plane = new THREE.Mesh(new THREE.PlaneGeometry(5, 5), material)
-plane.rotation.x = -Math.PI * 0.5
-plane.position.y = -0.65
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.5)
+// scene.add(ambientLight)
 
-scene.add(sphere, cube, torus, plane)
+const pointLight = new THREE.PointLight(0xffffff, 30)
+pointLight.position.x = 2
+pointLight.position.y = 3
+pointLight.position.z = 4
+scene.add(pointLight)
+
+const rgbeLoader = new RGBELoader()
+rgbeLoader.load('/textures/environmentMap/2k.hdr', environmentMap => {
+  environmentMap.mapping = THREE.EquirectangularReflectionMapping
+
+  scene.background = environmentMap
+  scene.environment = environmentMap
+})
 
 /**
  * Sizes
@@ -150,14 +207,13 @@ const clock = new THREE.Clock()
 const tick = () => {
   const elapsedTime = clock.getElapsedTime()
 
-  // Update objects
-  sphere.rotation.y = 0.1 * elapsedTime
-  cube.rotation.y = 0.1 * elapsedTime
-  torus.rotation.y = 0.1 * elapsedTime
+  sphere.rotation.y = elapsedTime * 0.1
+  plane.rotation.y = elapsedTime * 0.1
+  torus.rotation.y = elapsedTime * 0.1
 
-  sphere.rotation.x = 0.15 * elapsedTime
-  cube.rotation.x = 0.15 * elapsedTime
-  torus.rotation.x = 0.15 * elapsedTime
+  sphere.rotation.x = elapsedTime * -0.15
+  plane.rotation.x = elapsedTime * -0.15
+  torus.rotation.x = elapsedTime * -0.15
 
   // Update controls
   controls.update()
